@@ -4,7 +4,6 @@
 
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 def computeImageHistogram(img):
     totalRows = img.shape[0]
@@ -27,7 +26,14 @@ def calculatePDF(colorIntensities):
         histogramPDF[i,:] = colorIntensities[i,:] / sum(colorIntensities[i,:]) #divide each channel to total number of pixels in order to obtain PDF
     return histogramPDF
 
+def calculateCDF(histogramPDF):
+    histogramCDF = np.zeros((histogramPDF.shape[0], histogramPDF.shape[1]))
+    for i in range(histogramPDF.shape[0]): #loop through blue, green, red channels
+        histogramCDF[i] = np.cumsum(histogramPDF[i]) #calculate CDF using each of their PDF
+    return histogramCDF
+
 if __name__ == '__main__':
     inputImage = cv2.imread("color1.png", 1)
     colorIntensities = computeImageHistogram(inputImage)
     histogramPDF = calculatePDF(colorIntensities)
+    histogramCDF = calculateCDF(histogramPDF)
