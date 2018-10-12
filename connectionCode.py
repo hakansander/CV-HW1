@@ -47,7 +47,9 @@ class MyWindow(QtWidgets.QMainWindow):
             for i in range(3):
                 LUT[i,:] = histCalc.createLUT(self.inputImage, self.targetImage, histogramCDF_Input[i], histogramCDF_Target[i])
 
-            matchedInputImg = histCalc.HistogramMatching(LUT, self.inputImage)
+            self.copiedInputImage = np.copy(self.inputImage) #since the inputImage is modified inside the hisotgramMatching, we should copy it. Otherwise, multiple clicks of the equalizeButton gives erroneous results
+
+            matchedInputImg = histCalc.HistogramMatching(LUT, self.copiedInputImage)
 
             cv2.imwrite("matchedInputImage.png", matchedInputImg)
 
