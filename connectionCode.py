@@ -2,89 +2,118 @@ from __future__ import unicode_literals
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog, QLabel
 from PyQt5.QtGui import QPixmap
+import sys, os, matplotlib, cv2
+import numpy as np
 
-import sys
-import os
-import random
-import matplotlib
-# Make sure that we are using QT5
-matplotlib.use('Qt5Agg')
-
-from numpy import arange, sin, pi
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-
+import matplotlib.pyplot as plt
 
 
 class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MyWindow, self).__init__()
         uic.loadUi('userInterface.ui', self) #loads the uid from the file and parse it into the code
-        #OPENİNG IMAGE!
-        self.actionOpen_Target.triggered.connect(self.openImage)
 
-        sc = MyStaticMplCanvas(self.widget, width=2, height=2, dpi=100)
-        dc = MyDynamicMplCanvas(self.widget, width=2, height=2, dpi=100)
+        self.imagePath = '' #image path is held in this variable when the images are opened
+
+        self.inputImage = []
+        self.targetImage = []
+
+        self.inputImageFlag = False  #this variable is assigned to True when the input image is loaded
+        self.targetImageFlag = False #this variable is assigned to True when the target image is loaded
+
+        self.colorIntensitiesInput = []  #in this variable input image intensity frequencies for each channel is saved
+        self.colorIntensitiesTarget = [] #in this variable target image intensity frequencies for each channel is saved
+
+        self.actionOpen_Input.triggered.connect(self.openInputImage)    #open input image when the open input in the menu is clicked
+        self.actionOpen_Target.triggered.connect(self.openTargetImage)  #open target image #open input image when the open target in the menu is clicked
+        self.actionExit.triggered.connect(self.exitProgram)             #exit the program when the exit is clicked on the menu
+
+        self.equalizeButton.clicked.connect(self.match) #when the equalize button is clicked, call match function
+
+    def match(self):
+        #if both images are loaded, then apply histogram matching
+        if(self.inputImageFlag == True and self.targetImageFlag == True):
+
+            histogramPDF_Input = histCalc.calculatePDF(self.colorIntensitiesInput)
+            histogramCDF_Input = histCalc.calculateCDF(histogramPDF_Input)
+
+            histogramPDF_Target = histCalc.calculatePDF(self.colorIntensitiesTarget)
+            histogramCDF_Target = histCalc.calculateCDF(histogramPDF_Target)
+
+            #for each of the B,G,R channels create a LUT and save it to LUT numpy array
+            LUT = np.zeros((3,256))
+            for i in range(3):
+                LUT[i,:] = histCalc.createLUT(self.inputImage, self.targetImage, histogramCDF_Input[i], histogramCDF_Target[i])
+
+            matchedInputImg = histCalc.HistogramMatching(LUT, self.inputImage)
+
+            cv2.imwrite("matchedInputImage.png", matchedInputImg)
+
+            pixmap = QPixmap("matchedInputImage.png")
+            self.label_3.setPixmap(pixmap)
+
+            colorIntensitiesMatchedImg = histCalc.computeImageHistogram(matchedInputImg)
+            newMatchedInputImg = np.zeros((matchedInputImg.shape[2], matchedInputImg.shape[0], matchedInputImg.shape[1]))
+            newMatchedInputImg[0] = matchedInputImg[:,:,0]
+            newMatchedInputImg[1] = matchedInputImg[:,:,1]
+            newMatchedInputImg[2] = matchedInputImg[:,:,2]
+
+            outputImgHistName = "outputImageHistogram"
+            histCalc.printHistogram(colorIntensitiesMatchedImg, 255, outputImgHistName)
+
+            pixmap = QPixmap(outputImgHistName + ".png")
+            self.outputImageHistogram.setPixmap(pixmap)
+
+        #elif the inputImage is not loaded, show an error message
+        elif not self.inputImageFlag:
+            print("You have not selected an input image yet!")
+
+        #elif the targetImage is not loaded, show an error message
+        elif not self.targetImageFlag: #elif the targetImage
+            print("You have not selected a target image yet!")
 
     #Image opening function used for target image
-    def openImage(self):
-        imagePath, _ = QFileDialog.getOpenFileName()
-        pixmap = QPixmap(imagePath)
+    def openInputImage(self):
+        self.imagePath, _ = QFileDialog.getOpenFileName() #get the file path
+        self.inputImageFlag = True
+
+        #draw image to label that is created in the ui by importing from the indicated imagePath
+        pixmap = QPixmap(self.imagePath)
         self.label.setPixmap(pixmap)
 
+        self.inputImage = cv2.imread(self.imagePath, 1)
 
-class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+        intensityRange = np.linspace(start=0,stop=255,num=256)
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        self.colorIntensitiesInput = histCalc.computeImageHistogram(self.inputImage)
 
-        self.compute_initial_figure()
+        inputImgHistName = "inputImageHistogram"
+        histCalc.printHistogram(self.colorIntensitiesInput, 255, inputImgHistName)
 
-        FigureCanvas.__init__(self, fig)
-        self.setParent(parent)
+        pixmap = QPixmap(inputImgHistName + ".png")
+        self.inputImageHistogram.setPixmap(pixmap)
 
-        FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+    #Image opening function used for target image
+    def openTargetImage(self):
+        self.imagePath, _ = QFileDialog.getOpenFileName()
+        self.targetImageFlag = True
+        pixmap = QPixmap(self.imagePath)
+        self.label_2.setPixmap(pixmap)
 
-    def compute_initial_figure(self):
-        pass
+        self.targetImage = cv2.imread(self.imagePath, 1)
 
+        intensityRange = np.linspace(start=0,stop=255,num=256)
 
-class MyStaticMplCanvas(MyMplCanvas):
-    """Simple canvas with a sine plot."""
+        self.colorIntensitiesTarget = histCalc.computeImageHistogram(self.targetImage)
 
-    def compute_initial_figure(self):
-        t = arange(0.0, 3.0, 0.01)
-        s = sin(2*pi*t)
-        self.axes.plot(t, s)
+        targetImgHistName = "targetImageHistogram"
+        histCalc.printHistogram(self.colorIntensitiesTarget, 255, targetImgHistName)
 
-
-class MyDynamicMplCanvas(MyMplCanvas):
-    """A canvas that updates itself every second with a new plot."""
-
-    def __init__(self, *args, **kwargs):
-        MyMplCanvas.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.update_figure)
-        timer.start(1000)
-
-    def compute_initial_figure(self):
-        self.axes.plot([0, 1, 2, 3], [1, 2, 0, 4], 'r')
-
-    def update_figure(self):
-        # Build a list of 4 random integers between 0 and 10 (both inclusive)
-        l = [random.randint(0, 10) for i in range(4)]
-        self.axes.cla()
-        self.axes.plot([0, 1, 2, 3], l, 'r')
-        self.draw()
+        pixmap = QPixmap(targetImgHistName + ".png")
+        self.targetImageHistogram.setPixmap(pixmap)
 
 
 if __name__ == '__main__':
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     window = MyWindow()
     window.showMaximized()
