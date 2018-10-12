@@ -42,6 +42,16 @@ def createLUT(inputImg, targetImg, CDF_InputImg, CDF_TargetImg):
         LUT[g_i] = g_j
     return LUT
 
+#assigns to an intensity on the LUT for each pixel intensity in the inputImg
+def HistogramMatching(LUT, inputImg):
+    totalRows, totalColumns, totalChannels = inputImg.shape
+    for ch in range(totalChannels):
+        for i in range(totalRows):
+            for j in range(totalColumns):
+                inputImg[i,j,ch] = LUT[ch, inputImg[i, j, ch]]
+
+    return inputImg
+
 if __name__ == '__main__':
     inputImg = cv2.imread("color1.png", 1)
     colorIntensities_inputImg = computeImageHistogram(inputImg)
@@ -57,3 +67,5 @@ if __name__ == '__main__':
     LUT = np.zeros((3,256))
     for i in range(3):
         LUT[i,:] = createLUT(inputImg, targetImg, histogramCDF_inputImg[i], histogramCDF_targetImg[i])
+
+    modifiedInputImg = HistogramMatching(LUT, inputImg)
