@@ -32,8 +32,28 @@ def calculateCDF(histogramPDF):
         histogramCDF[i] = np.cumsum(histogramPDF[i]) #calculate CDF using each of their PDF
     return histogramCDF
 
+#creates LUT for the histogram matching using CDF of input image and target image
+def createLUT(inputImg, targetImg, CDF_InputImg, CDF_TargetImg):
+    LUT = np.zeros(256)
+    g_j = 0
+    for g_i in range(256):
+        while(CDF_InputImg[g_i] > CDF_TargetImg[g_j] and g_j < 255):
+            g_j += 1
+        LUT[g_i] = g_j
+    return LUT
+
 if __name__ == '__main__':
-    inputImage = cv2.imread("color1.png", 1)
-    colorIntensities = computeImageHistogram(inputImage)
-    histogramPDF = calculatePDF(colorIntensities)
-    histogramCDF = calculateCDF(histogramPDF)
+    inputImg = cv2.imread("color1.png", 1)
+    colorIntensities_inputImg = computeImageHistogram(inputImg)
+    histogramPDF_inputImg = calculatePDF(colorIntensities_inputImg)
+    histogramCDF_inputImg = calculateCDF(histogramPDF_inputImg)
+
+    targetImg = cv2.imread("color2.png", 1)
+    colorIntensities_targetImg = computeImageHistogram(targetImg)
+    histogramPDF_targetImg = calculatePDF(colorIntensities_targetImg)
+    histogramCDF_targetImg = calculateCDF(histogramPDF_targetImg)
+
+    #for each of the B,G,R channels create a LUT and save it to LUT numpy array
+    LUT = np.zeros((3,256))
+    for i in range(3):
+        LUT[i,:] = createLUT(inputImg, targetImg, histogramCDF_inputImg[i], histogramCDF_targetImg[i])
