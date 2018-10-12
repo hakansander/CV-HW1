@@ -6,101 +6,159 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1946</width>
-    <height>941</height>
+    <width>1962</width>
+    <height>1008</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="label">
+   <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>0</x>
+      <y>20</y>
+      <width>1961</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="equalizeButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
       <y>0</y>
-      <width>301</width>
-      <height>381</height>
+      <width>121</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
     </property>
     <property name="text">
-     <string/>
+     <string>Equalize Histogram</string>
     </property>
    </widget>
-   <widget class="QWidget" name="widget" native="true">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>400</y>
-      <width>331</width>
-      <height>411</height>
+      <x>100</x>
+      <y>40</y>
+      <width>520</width>
+      <height>941</height>
      </rect>
     </property>
+    <property name="title">
+     <string>Input</string>
+    </property>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>20</y>
+       <width>277</width>
+       <height>427</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="inputImageHistogram">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>450</y>
+       <width>490</width>
+       <height>481</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>0</y>
-      <width>271</width>
-      <height>381</height>
+      <x>702</x>
+      <y>40</y>
+      <width>520</width>
+      <height>941</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
+    <property name="title">
+     <string>Target</string>
     </property>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>277</width>
+       <height>427</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="targetImageHistogram">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>450</y>
+       <width>490</width>
+       <height>481</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>1360</x>
-      <y>-10</y>
-      <width>231</width>
-      <height>381</height>
+      <x>1300</x>
+      <y>40</y>
+      <width>520</width>
+      <height>941</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
+    <property name="title">
+     <string>Result</string>
     </property>
-   </widget>
-   <widget class="QLabel" name="targetImageHistogram">
-    <property name="geometry">
-     <rect>
-      <x>650</x>
-      <y>380</y>
-      <width>521</width>
-      <height>451</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="inputImageHistogram">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>370</y>
-      <width>561</width>
-      <height>481</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="outputImageHistogram">
-    <property name="geometry">
-     <rect>
-      <x>1240</x>
-      <y>360</y>
-      <width>501</width>
-      <height>501</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>20</y>
+       <width>277</width>
+       <height>427</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="outputImageHistogram">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>450</y>
+       <width>490</width>
+       <height>481</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -108,8 +166,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1946</width>
-     <height>21</height>
+     <width>1962</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
