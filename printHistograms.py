@@ -6,6 +6,9 @@
 #Although there is no need to print the histograms of PDF and CDF,
 #I have plotted them to check the correctness of the code and observe the results of PDF and CDF
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 #colorIntensities: (3,256) numpy array that contains intensity frequencies of B,G,R channels respectively
 #intensityRange: (256) 1D numpy array that is given for the creation of the intensity range,
 #                 this variable represents the ending of the range i.e. (0......255), that is 255 for this vector
@@ -19,7 +22,7 @@ def printHistogram(colorIntensities, intensityRange, histogramName):
     plt.bar(intensityRange, colorIntensities[1], color="green")
     plt.subplot(313)
     plt.bar(intensityRange, colorIntensities[0], color="blue")
-    plt.show()
+    plt.savefig(histogramName + ".png")
 
 #histogramCDF: Calculated CDF of the given image
 #windowTitle: The title which pops up on the top left of the matplotlib window
