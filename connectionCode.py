@@ -7,6 +7,8 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
+import calculateHistograms as histCalc
+import printHistograms as printHist
 
 class MyWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -59,7 +61,7 @@ class MyWindow(QtWidgets.QMainWindow):
             newMatchedInputImg[2] = matchedInputImg[:,:,2]
 
             outputImgHistName = "outputImageHistogram"
-            histCalc.printHistogram(colorIntensitiesMatchedImg, 255, outputImgHistName)
+            printHist.printHistogram(colorIntensitiesMatchedImg, 255, outputImgHistName)
 
             pixmap = QPixmap(outputImgHistName + ".png")
             self.outputImageHistogram.setPixmap(pixmap)
@@ -88,7 +90,7 @@ class MyWindow(QtWidgets.QMainWindow):
         self.colorIntensitiesInput = histCalc.computeImageHistogram(self.inputImage)
 
         inputImgHistName = "inputImageHistogram"
-        histCalc.printHistogram(self.colorIntensitiesInput, 255, inputImgHistName)
+        printHist.printHistogram(self.colorIntensitiesInput, 255, inputImgHistName)
 
         pixmap = QPixmap(inputImgHistName + ".png")
         self.inputImageHistogram.setPixmap(pixmap)
@@ -107,11 +109,14 @@ class MyWindow(QtWidgets.QMainWindow):
         self.colorIntensitiesTarget = histCalc.computeImageHistogram(self.targetImage)
 
         targetImgHistName = "targetImageHistogram"
-        histCalc.printHistogram(self.colorIntensitiesTarget, 255, targetImgHistName)
+        printHist.printHistogram(self.colorIntensitiesTarget, 255, targetImgHistName)
 
         pixmap = QPixmap(targetImgHistName + ".png")
         self.targetImageHistogram.setPixmap(pixmap)
 
+    #when the exit button on the menu is clicked, call the function below and exit the program
+    def exitProgram(self):
+        app.quit()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
