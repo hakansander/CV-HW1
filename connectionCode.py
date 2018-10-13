@@ -127,5 +127,6 @@ class MyWindow(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     window = MyWindow()
+    window.setWindowTitle("Histogram Equalization")
     window.showMaximized()
     sys.exit(app.exec_())
