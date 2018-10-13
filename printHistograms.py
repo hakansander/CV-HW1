@@ -1,6 +1,6 @@
 #Student Name:   Hakan Sander
 #Student Number: 150140146
-#Date:
+#Date: 12.10.2018
 
 #This file contains the printing operation codes of all the histograms
 #Although there is no need to print the histograms of PDF and CDF,
