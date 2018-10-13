@@ -1,6 +1,6 @@
 #Student Name:   Hakan Sander
 #Student Number: 150140146
-#Date:
+#Date: 12.10.2018
 
 import cv2
 import numpy as np
@@ -51,21 +51,3 @@ def HistogramMatching(LUT, inputImg):
                 inputImg[i,j,ch] = LUT[ch, inputImg[i, j, ch]]
 
     return inputImg
-
-if __name__ == '__main__':
-    inputImg = cv2.imread("color1.png", 1)
-    colorIntensities_inputImg = computeImageHistogram(inputImg)
-    histogramPDF_inputImg = calculatePDF(colorIntensities_inputImg)
-    histogramCDF_inputImg = calculateCDF(histogramPDF_inputImg)
-
-    targetImg = cv2.imread("color2.png", 1)
-    colorIntensities_targetImg = computeImageHistogram(targetImg)
-    histogramPDF_targetImg = calculatePDF(colorIntensities_targetImg)
-    histogramCDF_targetImg = calculateCDF(histogramPDF_targetImg)
-
-    #for each of the B,G,R channels create a LUT and save it to LUT numpy array
-    LUT = np.zeros((3,256))
-    for i in range(3):
-        LUT[i,:] = createLUT(inputImg, targetImg, histogramCDF_inputImg[i], histogramCDF_targetImg[i])
-
-    modifiedInputImg = HistogramMatching(LUT, inputImg)
