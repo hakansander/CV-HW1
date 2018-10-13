@@ -1,3 +1,7 @@
+#Student Name:   Hakan Sander
+#Student Number: 150140146
+#Date: 12.10.2018
+
 from __future__ import unicode_literals
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtWidgets import QFileDialog, QLabel
