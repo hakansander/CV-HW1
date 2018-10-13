@@ -29,8 +29,11 @@ def calculatePDF(colorIntensities):
 def calculateCDF(histogramPDF):
     histogramCDF = np.zeros((histogramPDF.shape[0], histogramPDF.shape[1]))
     for i in range(histogramPDF.shape[0]): #loop through blue, green, red channels
-        histogramCDF[i] = np.cumsum(histogramPDF[i]) #calculate CDF using each of their PDF
+        for j in range(histogramPDF.shape[1]):
+            for k in range(j+1):
+                histogramCDF[i][j] += histogramPDF[i][k] #calculate CDF using the histogramPDF (probability density function)
     return histogramCDF
+
 
 #creates LUT for the histogram matching using CDF of input image and target image
 def createLUT(inputImg, targetImg, CDF_InputImg, CDF_TargetImg):
