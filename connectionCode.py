@@ -80,7 +80,7 @@ class MyWindow(QtWidgets.QMainWindow):
         elif not self.targetImageFlag: #elif the targetImage
             print("You have not selected a target image yet!")
 
-    #Image opening function used for target image
+    #Image opening function used for input image
     def openInputImage(self):
         self.imagePath, _ = QFileDialog.getOpenFileName() #get the file path
         self.inputImageFlag = True
